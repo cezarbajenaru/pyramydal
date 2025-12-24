@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Datasets</title>
+</head>
+<body>
+    <h1>Your datasets</h1>
+
+    <ul>
+        {% for dataset in datasets %}
+            <li>
+                <a href="{% url 'dataset_detail' dataset.id %}">
+                    {{ dataset.name }}
+                </a>
+                (updated {{ dataset.updated_at }})
+            </li>
+        {% empty %}
+            <li>No datasets yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

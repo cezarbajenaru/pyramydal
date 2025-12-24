@@ -1,4 +1,4 @@
-# spreadsheetSJS
+# pyramydal project
 Create a platform for my fathers 100k excel line loading problem
 The project is a Cloud-Native tool created around Python tooling.
 The platform will bring
@@ -8,180 +8,209 @@ The platform will bring
    S3 backup storage
    printable final output
    AWS infra
-   API driven backend (Django + D
+   API driven backend (Django + D)
 
 
 
-Django will be used as a framwork for this project
-   Solves the login issue - complete admin dashboard - User management - Permissions - Authentication -> Login/Logout pages
-   Crud Pages(create,read,update,delete)
-   Tables/ views for any model
-   Forms for editing data
-   Search, filters
-   ORM built in
-   Easy to connect to SpreadJS frontend
-   Easy REST API with Django Rest framework
+Project Brief — Django + HTMX Data Platform
+Goal
 
-Terraform for infrastructure(Tofu)
+Build a cloud-native data platform to replace large Excel workflows (100k+ rows) with a database-first, server-rendered system focused on correctness, scalability, versioning, and printability.
 
-   ALB = load balancing
-   S3 = stores Excel + JSON + SpreadJS assets - FRONTEND
+Technology Choices
+Application
 
-   ECS Fargate = production Django BACKEND
-   RDS PostgreSQL = metadata, file info
-   S3 BUCKET = Excel + json file storage
-   
-   IAM roles = secure access
-   
-   
-```
+Django as primary framework
 
+Authentication (login/logout)
+
+User management and permissions
+
+Admin dashboard
+
+ORM and migrations
+
+CRUD views and forms
+
+Server-side pagination, search, filters
+
+HTMX for frontend interactivity
+
+Partial page updates
+
+Inline edits
+
+Modals and actions without SPA complexity
+
+Django REST Framework (selective use)
+
+Import/export endpoints
+
+Async or bulk operations
+
+Infrastructure (Terraform / OpenTofu)
+
+ALB – HTTP entrypoint
+
+ECS Fargate – Django backend runtime
+
+RDS PostgreSQL – authoritative data store
+
+S3
+
+Excel imports/exports
+
+JSON snapshots
+
+Backups
+
+IAM roles – least-privilege access for services
+
+High-Level Architecture
 Browser (User)
+```
 ────────────────────────────────────
-│ Django login page                │
-│ Django-protected /spread/ route  │
-│ SpreadJS frontend UI             │
+│ Django login                     │
+│ Server-rendered tables           │
+│ HTMX interactions               │
+│ Print views                      │
 ────────────────────────────────────
               │
               ▼
 Django Backend
 ────────────────────────────────────
-│ Authentication                   │
-│ File manager API                 │
+│ Authentication & permissions     │
+│ Dataset and row management       │
 │ Versioning                       │
-│ Permissions / Roles              │
-│ Excel/JSON transformations       │
-│ REST API via DRF                 │
+│ Import / export (Excel, CSV)     │
+│ Audit & metadata APIs            │
 ────────────────────────────────────
               │
               ▼
-Cloud Storage / Database
+Data & Storage
 ────────────────────────────────────
-│ S3 Buckets (excel + json)        │
-│ PostgreSQL (metadata)            │
-│ Folder structure                 │
+│ PostgreSQL (source of truth)     │
+│ S3 (imports, exports, snapshots)│
 │ Version history                  │
 ────────────────────────────────────
-
-
 ```
-
-Wannabe Github repo structure
 ```
-factoryspread/ → project config
-
-spreadsheet/ → main logic
-
-models.py → file metadata & versions
-
-api_views.py → REST API
-
-spreadsheet.html → page containing SpreadJS
-
-static/js/ → SpreadJS init + API calls
-
+Repository Structure
 factory-spreadsheet-platform/
 │
 ├── backend/
-│   ├── factoryspread/          # Django project
+│   ├── factoryspread/            # Django project
 │   │   ├── settings.py
 │   │   ├── urls.py
-│   │   ├── wsgi.py
-│   │   └── asgi.py
+│   │   └── wsgi.py
 │   │
-│   ├── spreadsheet/            # Main app
-│   │   ├── models.py
-│   │   ├── views.py
+│   ├── spreadsheet/              # Core app
+│   │   ├── models.py             # Dataset, rows, versions
+│   │   ├── views.py              # HTML + HTMX views
 │   │   ├── urls.py
 │   │   ├── admin.py
-│   │   ├── serializers.py
-│   │   ├── api_views.py        # DRF endpoints
+│   │   ├── serializers.py        # DRF (imports/exports)
+│   │   ├── api.py
 │   │   ├── templates/
-│   │   │   └── spreadsheet.html
+│   │   │   └── spreadsheet/
 │   │   └── static/
-│   │       └── js/
-│   │           ├── spread-init.js
-│   │           └── api-client.js
+│   │       └── spreadsheet/
+│   │           └── htmx.js
 │   │
-│   ├── requirements.txt
 │   ├── Dockerfile
+│   ├── requirements.txt
 │   └── manage.py
 │
-├── frontend/
-│   └── spreadjs/               # SpreadJS library + custom JS
-│       ├── gc.spread.sheets.all.min.js
-│       └── styles/
+├── infra/
+│   ├── tofu/
+│   │   ├── modules/
+│   │   └── envs/
+│   └── docker-compose.yml        # local dev
 │
-├── infrastructure/
-│   ├── docker-compose.yaml
-│   ├── aws/
-│   │   ├── terraform/
-│   │   └── cloudformation/
-│   └── nginx/
-│       └── nginx.conf
+├── .github/workflows/
+│   └── deploy.yml
 │
 ├── docs/
-│   ├── architecture-diagram.png
+│   ├── architecture.md
 │   ├── mvp-plan.md
 │   └── roadmap.md
 │
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # CI/CD pipeline
-│
 ├── LICENSE
 └── README.md
-
-
 ```
-The task order:
+Delivery Plan
+Sprint 1 — Core Platform
 
-Sprint 1:
-Backend:
 Initialize Django project
-Add /spread/ page
-Add login system
-Add file metadata model
-Add admin panel entries
-Add endpoint: /api/file/<id>/load/
-Add endpoint: /api/file/<id>/save/
 
-Frontend:
-Embed SpreadJS in template
-Load sample JSON
-Basic toolbar (save, open, print)
+Authentication and protected routes
 
-Sprint 2:
-Add Excel import → JSON converter
-Add JSON → Excel export
-Connect to database
-Implement S3 storage (optional in MVP)
-Add file list sidebar
-Add “Save As New Version”
-Add printing integration
-Add search/filtering
+Dataset and row models
 
-Sprint 3:
-Add pagination for large files
-Add color-coded rows
-Add metadata sidebar fields
-Add basic user roles
-Add documentation
-Deploy to EC2 or Elastic Beanstalk
+Admin CRUD
 
-Sprint 4:
-Directory manager
+Server-rendered table view
+
+HTMX pagination and edits
+
+Initial print view
+
+Sprint 2 — Data I/O
+
+Excel import → database
+
+Database → CSV / Excel export
+
+Version snapshots
+
+Search and filtering
+
+Optional S3 integration
+
+Sprint 3 — Scale & Deploy
+
+Large-dataset pagination strategy
+
+Indexing and performance tuning
+
+Role-based access
+
+Documentation
+
+Deploy to ECS Fargate
+
+Sprint 4 — Enterprise Features
+
 Folder structure
-Multiple spreadsheets open at once
-Drag-and-drop file organization
-Permissions per file
-File locking
-Version comparison
-Audit logs
-Notifications
-Bulk import of files
-Multi-department setup
 
-Sprint 5:
-Possibility to print the resulted page
-Export as PDF or Excel
+File locking
+
+Version comparison
+
+Audit logs
+
+Bulk operations
+
+Multi-department isolation
+
+Sprint 5 — Output & Reporting
+
+Print-optimized views
+
+PDF export
+
+Styled Excel exports
+
+Positioning
+
+This project demonstrates:
+
+Backend-owned data systems
+
+Cloud-native architecture
+
+Infrastructure as code
+
+Operational safety and scalability
+
+It is a platform engineering project, not a frontend showcase.
