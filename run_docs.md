@@ -38,10 +38,11 @@ u.save()
 
 This command is only for creation ( runs only once):
 python3 -m venv .venv
-
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 This is for activation of the venv. Run everytime you do mods on the project
 plasticmemory@~/projects/pyramydal/backend[main]
 $ source ./.venv/bin/activate
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
 Before any Django command:
 
