@@ -1,0 +1,33 @@
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in rows %}
+    <tr>
+        <td>{{ row.row_index }}</td>
+        <td>
+            <form
+                hx-post="{% url 'update_row' row.id %}"
+                hx-target="#rows"
+                hx-swap="innerHTML"
+            >
+                <textarea name="data" rows="2" cols="40">
+                {{ row.data|json_script:"rowdata" }}
+                </textarea>
+
+                <button type="submit">Save</button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No rows.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
